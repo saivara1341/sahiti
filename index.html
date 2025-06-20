@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sahiti AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* For custom scrollbars if desired, optional */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    /* Shine effect for buttons */
+    .shine-effect {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    }
+    .shine-effect:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.08);
+    }
+    .dark .shine-effect:hover {
+        box-shadow: 0 10px 20px rgba(255,255,255,0.05), 0 3px 6px rgba(255,255,255,0.03);
+    }
+    .shine-effect::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%; /* Start off-screen */
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%, /* Use opacity for gradient */
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-25deg);
+      transition: left 0.7s ease-in-out;
+    }
+    .dark .shine-effect::before {
+        background: linear-gradient( /* Keep same gradient for dark, opacity handles visibility */
+        120deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+    }
+    .shine-effect:hover::before {
+      left: 120%; /* Move across the button */
+    }
+    /* Add a subtle animation for the greeting screen text */
+    .greeting-text-animate {
+        animation: fadeInScaleUp 1.5s ease-out forwards;
+    }
+    @keyframes fadeInScaleUp {
+        0% { opacity: 0; transform: scale(0.95); }
+        100% { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes gentleShimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+  </style>
+  <script>
+    // Apply theme from localStorage or system preference BEFORE React renders to prevent FOUC
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    tailwind.config = {
+      darkMode: 'class', // Changed from 'media' to 'class'
+      theme: {
+        extend: {
+          colors: {
+            primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"},
+            secondary: {"50":"#fdf2f8","100":"#fce7f3","200":"#fbcfe8","300":"#f9a8d4","400":"#f472b6","500":"#ec4899","600":"#db2777","700":"#be185d","800":"#9d174d","900":"#831843","950":"#500724"},
+            accent: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"}
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+            lexend: ['Lexend', 'sans-serif'], // Added Lexend specifically
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+            'subtle-pulse': 'subtlePulse 2s infinite ease-in-out',
+            'slide-in-bottom': 'slideInBottom 0.5s ease-out forwards',
+            'gentle-shimmer': 'gentleShimmer 3s infinite linear', // Added gentle shimmer animation
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            subtlePulse: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.05)' },
+            },
+            slideInBottom: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+            // gentleShimmer keyframes are defined in the <style> block above for complex gradients
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/client": "https://esm.sh/react-dom@^18.2.0/client",
+    "react-dom": "https://esm.sh/react-dom@^18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@^18.2.0/jsx-runtime",
+    "react": "https://esm.sh/react@^18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@0.12.0",
+    "react-dom/": "https://esm.sh/react-dom@^18.2.0/", 
+    "react/": "https://esm.sh/react@^18.2.0/"    
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300 ease-in-out">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
